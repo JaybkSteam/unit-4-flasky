@@ -11,14 +11,18 @@ app = Flask(__name__)
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
-
-    newTodo = request.form["newTodo"]
-
-    todolist.append(newTodo)
+    if request.method == 'POST':
+        newTodo = request.form["newTodo"]
+        todolist.append(newTodo)
 
     return render_template ("todo.html.jinja", my2dolist = todolist )
-    
 
-    return ("This my 2dos...!")
 
-    # return ("<p style=\"color:blue;\">Hello!</p>") 
+
+@app.route("/delete_todo/<todo_index>", methods=['POST'])
+def todo_delete(todo_index): 
+    del todolist[todo_index]
+
+
+
+ #return ("<p style=\"color:blue;\">Hello!</p>")
