@@ -1,4 +1,8 @@
 from flask import Flask, render_template, request
+import pymysql
+import pymysql.cursors
+from pprint import pprint as print
+xw
 
 
 todolist = ["Go to sleep when im home", "Gaming", "Read books/comics"]
