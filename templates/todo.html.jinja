@@ -6,7 +6,7 @@
 
         <style>
         
-            body {
+  body {
                 background-color: teal;
                 text-align: center;
                 font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -14,13 +14,47 @@
 
             ul {
                 list-style-type: none; /* Remove bullets */
-                padding: 0; /* Remove padding */
-                margin: 0; /* Remove margins */
+                padding: 10; /* Remove padding */
+                margin: 10; /* Remove margins */
+            }
+
+            .button {
+                background-color: #008CBA; /* Green */
+                border: none;
+                color: white;
+                padding: 16px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                transition-duration: 0.4s;
+                cursor: pointer;
+                font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+            }
+
+            .button {
+                background-color: white; 
+                color: black; 
+                border: 2px solid #008CBA;
+                font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+
+            .button:hover {
+                background-color: #008CBA;
+                color: white;
+                font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+
+            .completed {
+                text-decoration: line-through;
+                font-style: italic;
             }
 
         </style>
 
-        <title>Living life</title>
+        <title>money</title>
 
     </head>
 
@@ -30,15 +64,35 @@
 
         <h1>My Todos</h1>
 
-        <ul class="">
+        <ul>
+
             {% for todo in my2dolist %}
-                <li>
-                    {{todo}}
-                    <form method="post" action="/delete/{{loop.index0}}">
-                        <input type="submit" value="Delete" class="button">
-                    </form>
+
+                <li class="{% if todo['complete'] %} complete {% endif %}">
+
+                    {{todo["description"]}}
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    
+                        <form method="post" action="/delete/{{todo['id']}}">
+                            <input type="submit" value="Delete" class="btn btn-primary me-md-2">
+                        </form>
+
+                        <form method="post" action="/completedTodo/{{todo['id']}}">   
+                            <input type="submit" value="Mark Complete" class="btn btn-success">
+                        </form>
+
+                    </div>
+
+
+                    {% if todo["complete"]%}
+                    ✅
+                    {% endif %}
+
                 </li>
+
             {% endfor %}
+
         </ul>
 
         <form method="post">
@@ -48,6 +102,7 @@
             <input type="submit">
 
         </form>
+
 
 
         <hr>
