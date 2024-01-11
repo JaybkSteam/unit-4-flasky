@@ -1,6 +1,7 @@
 import pymysql
 import pymysql.cursors
 
+
 conn = pymysql.connect(
     database="world",
     user="jedouard",
@@ -21,3 +22,4 @@ print(results[0]["HeadOfState"])
 
 for x in results:
     print(x['HeadOfState'])
+

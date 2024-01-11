@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect
 import pymysql
 import pymysql.cursors
 from pprint import pprint as print
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 conn = pymysql.connect (
     database="jedouard_todos",
@@ -16,19 +19,26 @@ todolist = ["Go to sleep when im home", "Gaming", "Read books/comics"]
 ######
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 
 ######
 
+users = {
+    "jayroc": generate_password_hash("pokemon123"),
+    "1206": generate_password_hash("gottacatch1")
+}
+
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users and \
+            check_password_hash(users.get(username), password):
+        return username
+
+
 @app.route("/", methods = ["GET", "POST"])
+@auth.login_required
 def index():
-
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM `todos` ORDER BY `complete`") #DESC to reverse the order
-
-    cursor.close()
-
-    conn.commit()
 
     if request.method == 'POST':
         newTodo = request.form["newTodo"]
@@ -36,13 +46,23 @@ def index():
 
         cursor = conn.cursor()
 
-        cursor.execute(f"INSERT INTO `todos` (`description`) VALUES ('{newTodo}'")
+        cursor.execute(f"INSERT INTO `todos` (`description`) VALUES ('{newTodo}')")
         
         cursor.close()
 
         conn.commit()
+    
+    cursor = conn.cursor()
 
-    return render_template ("todo.html.jinja", my2dolist = todolist )
+    cursor.execute("SELECT * FROM `todos` ORDER BY `complete`") #DESC to reverse the order
+
+    results = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template ("todo.html.jinja", my2dolist = results )
+
+    return "Hello, {}!".format(auth.username())
 
 
 
@@ -52,7 +72,7 @@ def todo_delete(todo_index):
 
     cursor = conn.cursor()
 
-    cursor.execute(f"INSERT INTO `todos` (`description`) VALUES ('{todo_index}'")
+    cursor.execute(f"DELETE FROM `todos` WHERE `id` = {todo_index}")
 
     cursor.close()
 
